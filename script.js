@@ -18,19 +18,9 @@ function createPlayers() {
 }
 
 // Logic for the game
-function gameLogic(board, players) {
-    const { playerOne, playerTwo } = players
-    let playerTurn = true; // true = Player1, false = Player2
-    let index = 0;
-    
-    // board = [1,1,1,'','','','','','']
-    // console.log(board[8])
-    // winCheck(board[0])
+function gameLogic(cells, board, players){
+    console.log(cells.id)
 
-}
-
-function playerInput(div, board, players){
-    console.log(div.id)
     // LOGIC for PLAYER INPUT
 
     const { playerOne, playerTwo } = players
@@ -40,7 +30,8 @@ function playerInput(div, board, players){
     for (i = 0; i < 9; i++) {
         const playerValue = playerTurn ? playerOne.value : playerTwo.value;
         let inputMsg = playerTurn ? "Player 1: Please choose a square" : "Player 2: Please choose a square"
-        let input = Number(prompt(inputMsg)) // change to div and clicks
+        let input = cells.id
+        // let input = Number(prompt(inputMsg)) // change to div and clicks
         if (board[input] === '') {
             if (playerTurn) {
                 board[input] = playerValue
@@ -70,7 +61,6 @@ function winCheck(index, playerValue, board) {
 }
 
 // Display / DOM logic
-
 function displayGame() {
     const container = document.getElementById('container')
     const playArea = document.createElement('div')
@@ -80,20 +70,19 @@ function displayGame() {
         const div = document.createElement('div')
         div.classList.add('cell')
         div.id = i
-        div.addEventListener('click', e => playerInput(div))
+        div.addEventListener('click', e => gameLogic(div))
         playArea.appendChild(div)
     }
     container.appendChild(playArea)
-
-    return
+    return container
 }
 
 // Run Game
 function gameController() {
-    const board = gameboard()
     const players = createPlayers()
-    displayGame()
-    gameLogic(board, players)
+    const board = gameboard()
+    const cells = displayGame()
+    gameLogic(cells, board, players)
 }
 
 gameController()
