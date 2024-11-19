@@ -1,13 +1,11 @@
-// make game board
-// make player objects with 1 / 2 to replace cells on game board
-// check valid player inputs / game end checks
-
 // Make Gameboard
+// 0,1,2
+// 3,4,5
+// 6,7,8
 function gameboard() {
     const rows = 3;
     const cols = 3;
     let board = ['','','','','','','','',''];
-
     return board
 }
 
@@ -29,7 +27,15 @@ function gameLogic(board, players) {
     // console.log(board[8])
     // winCheck(board[0])
 
+}
+
+function playerInput(div, board, players){
+    console.log(div.id)
     // LOGIC for PLAYER INPUT
+
+    const { playerOne, playerTwo } = players
+    let playerTurn = true; // true = Player1, false = Player2
+    let index = 0;
 
     for (i = 0; i < 9; i++) {
         const playerValue = playerTurn ? playerOne.value : playerTwo.value;
@@ -49,16 +55,11 @@ function gameLogic(board, players) {
             if (i > 3) {
                 if (winCheck(index, playerValue, board)) {
                     console.log(`${playerValue} is the winner`)
-                    break
                 }
             }
         }
     }
 }
-
-// 0,1,2
-// 3,4,5
-// 6,7,8
 
 // Win check - still needs to finalise win condition
 function winCheck(index, playerValue, board) {
@@ -66,13 +67,32 @@ function winCheck(index, playerValue, board) {
     const winConditions = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
     let winCombos = winConditions.filter((combo) => combo.includes(index)).some(possibleCombo => possibleCombo.every(index => board[index] === playerValue))
     return true
+}
 
+// Display / DOM logic
+
+function displayGame() {
+    const container = document.getElementById('container')
+    const playArea = document.createElement('div')
+    playArea.classList.add('game')
+
+    for (i = 0; i < 9; i++) {
+        const div = document.createElement('div')
+        div.classList.add('cell')
+        div.id = i
+        div.addEventListener('click', e => playerInput(div))
+        playArea.appendChild(div)
+    }
+    container.appendChild(playArea)
+
+    return
 }
 
 // Run Game
 function gameController() {
     const board = gameboard()
     const players = createPlayers()
+    displayGame()
     gameLogic(board, players)
 }
 
