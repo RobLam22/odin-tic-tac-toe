@@ -17,39 +17,45 @@ function createPlayers() {
     return { playerOne, playerTwo }
 }
 
+// Player Input
+function playerInput(div, players) {
+    const { playerOne, playerTwo } = players
+    console.log(playerOne)
+    let playerTurn = true; // true = Player1, false = Player2
+    let index = 0;
+    
+    // for (i = 0; i < 9; i++) {
+    //     const playerValue = playerTurn ? playerOne.value : playerTwo.value;
+    //     if (board[input] === '') {
+    //         if (playerTurn) {
+    //             board[input] = playerValue
+    //             index = input
+    //             playerTurn = false
+    //             console.log(playerTurn)
+    //         } else if (!playerTurn) {
+    //             board[input] = playerValue
+    //             index = input
+    //             playerTurn = true
+    //             console.log(playerTurn)
+    //         }
+    //         console.log(board)
+    //         if (i > 3) {
+    //             if (winCheck(index, playerValue, board)) {
+    //                 console.log(`${playerValue} is the winner`)
+    //             }
+    //         }
+    //     }
+    // }
+    console.log(div.id)
+    return div.id
+}
+
 // Logic for the game
 function gameLogic(cells, board, players){
-    console.log(cells.id)
 
     // LOGIC for PLAYER INPUT
 
-    const { playerOne, playerTwo } = players
-    let playerTurn = true; // true = Player1, false = Player2
-    let index = 0;
 
-    for (i = 0; i < 9; i++) {
-        const playerValue = playerTurn ? playerOne.value : playerTwo.value;
-        let inputMsg = playerTurn ? "Player 1: Please choose a square" : "Player 2: Please choose a square"
-        let input = cells.id
-        // let input = Number(prompt(inputMsg)) // change to div and clicks
-        if (board[input] === '') {
-            if (playerTurn) {
-                board[input] = playerValue
-                index = input
-                playerTurn = false
-            } else if (!playerTurn) {
-                board[input] = playerValue
-                index = input
-                playerTurn = true
-            }
-            console.log(board)
-            if (i > 3) {
-                if (winCheck(index, playerValue, board)) {
-                    console.log(`${playerValue} is the winner`)
-                }
-            }
-        }
-    }
 }
 
 // Win check - still needs to finalise win condition
@@ -61,7 +67,8 @@ function winCheck(index, playerValue, board) {
 }
 
 // Display / DOM logic
-function displayGame() {
+function displayGame(players) {
+    const { playerOne, playerTwo } = players
     const container = document.getElementById('container')
     const playArea = document.createElement('div')
     playArea.classList.add('game')
@@ -70,7 +77,7 @@ function displayGame() {
         const div = document.createElement('div')
         div.classList.add('cell')
         div.id = i
-        div.addEventListener('click', e => gameLogic(div))
+        div.addEventListener('click', e => playerInput(div, players))
         playArea.appendChild(div)
     }
     container.appendChild(playArea)
@@ -81,7 +88,7 @@ function displayGame() {
 function gameController() {
     const players = createPlayers()
     const board = gameboard()
-    const cells = displayGame()
+    const cells = displayGame(players)
     gameLogic(cells, board, players)
 }
 
