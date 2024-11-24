@@ -3,43 +3,63 @@
 // 3,4,5
 // 6,7,8
 
-// function getValue() {}
-
 function gameboard() {
     let board = ['', '', '', '', '', '', '', '', '']
 
     // gets board for UI to render
-    function getBoard() {
+    const getBoard = () => {
         return board
     }
 
     // another function to update board with player value
-    function playerInput(value) {
-        board[0] = value
+    function playerInput(value, index, round) {
+        if (board[index] != 1 && board[index] != 2) {
+            round++
+            console.log(round)
+            board[index] = value
+            console.log(board)
+        } else {
+            console.log("space full")
+            return
+        }
     };
 
     return { getBoard, playerInput }
 }
 
 function gameController() {
-    let boardState = gameboard() // brings in functions and let board
-    boardState.getBoard()
-    boardState.playerInput(1) // working 
-    console.log(boardState.getBoard())
-    boardState.getBoard()
-    
+    const { getBoard, playerInput } = gameboard() // brings in functions and let board
+
     const player1 = 1;
     const player2 = 2;
-    let round = 1;
+    let round = 0; // false = p1's turn
+    console.log(round)
+    function displayBoard() {
+        const container = document.getElementById('container')
+        const playArea = document.createElement('div')
+        playArea.classList.add('game')
+        for (i = 0; i < 9; i++) {
+            const div = document.createElement('div')
+            div.classList.add('cell')
+            div.id = i
+            div.addEventListener('click', e => playerInput(playTurn(), div.id, round))
+            playArea.appendChild(div)
+        }
+        container.appendChild(playArea)
+    }
     
-    function playTurn(index) { 
-        boardState.playerInput(1)
-        round++
+    function playTurn() {
+        if (round > 4) {
+            checkWinner()
+        }
+        return round % 2 === 0 ? player1 : player2
     }
 
+    displayBoard()
 }
 
 function checkWinner(fieldIndex) {
+    console.log("win is checked")
     const winConditions = [
       [0, 1, 2],
       [3, 4, 5],
@@ -61,9 +81,7 @@ function checkWinner(fieldIndex) {
   };
 
 
-
-let gamepieces = { gameboard }
-console.log(gameController())
+gameController()
 
 
 // // display function
