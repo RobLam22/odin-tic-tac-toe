@@ -1,4 +1,4 @@
-// Make Gameboard
+// Gameboard
 // 0,1,2
 // 3,4,5
 // 6,7,8
@@ -44,7 +44,7 @@ const rounds = (() => {
     return { checkRound, nextRound }
 })()
 
-function playTurn(index) {
+const playTurn = ((index) => {
     const { checkRound } = roundController()
     const { player1, player2 } = playerController()
     const round = checkRound()
@@ -56,7 +56,7 @@ function playTurn(index) {
         checkWinner(Number(index), playerSign, board)
     }
     return playerSign
-}
+})();
 
 function checkInput(userInput) {
     const { player1, player2 } = playerController // otherwise it would ahve been const { player1, player2 } = playerController(). makes the variables accessible? global but private?
@@ -74,7 +74,7 @@ function checkInput(userInput) {
 
 }
 
-function displayBoard() {
+const displayBoard = (() => {
     const container = document.getElementById('container')
     const playArea = document.createElement('div')
     playArea.classList.add('game')
@@ -88,9 +88,9 @@ function displayBoard() {
     container.appendChild(playArea)
 
     return { displayBoard }
-}
+})();
 
-function checkWinner(fieldIndex, playerSign, board) {
+const checkWinner = ((fieldIndex, playerSign, board) {
     console.log(fieldIndex, playerSign)
     console.log("win is checked")
     const winConditions = [
@@ -112,7 +112,7 @@ function checkWinner(fieldIndex, playerSign, board) {
     // console.log(winConditions.filter(combination => combination.includes(fieldIndex))).some(possibleCombo => possibleCombo.every(index => board[index] === playerSign))
     // console.log(winConditions.filter(combination => combination.includes(fieldIndex)).some(possibleCombo => possibleCombo.every(index => board[index] === playerSign)))
     // return 
-};
+})();
 
 function gameController() {
     
