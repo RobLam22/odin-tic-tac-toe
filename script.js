@@ -1,26 +1,16 @@
-// Gameboard
+// gameboardController
 // 0,1,2
 // 3,4,5
 // 6,7,8
 
-const gameboard = (() => { // arrow function avoids the standard function and having to have a function name.
-
+const gameboardController = (() => { // arrow function avoids the standard function and having to have a function name.
     let board = ['', '', '', '', '', '', '', '', '']
-
-    // allows to retrieve board arr
-    const getBoard = () => {
-        return board
-    }
-
-    // accepts player token into board
-    function playerInput(value, index) {
-        board[index] = value
-        console.log(board)
-    }
+    const getBoard = () => board    // allows to retrieve board arr
+    const playerInput = (value, index) => board[index] = value;  // accepts player token into board. console.log here immedieatly retruns empty arr due to IIFE
 
     return { getBoard, playerInput }
-})(); // () at the end here makes it a IIFE where you can call on it later via gameboard.playerInput().
-// otherwise if it was just a function before i would need to do const { getBoard , playerInput } = gameboard() in any other function to access it
+})(); // () at the end here makes it a IIFE where you can call on it later via gameboardController.playerInput().
+// otherwise if it was just a function before i would need to do const { getBoard , playerInput } = gameboardController() in any other function to access it
 
 const playerController = (() => {
     const player1 = 1;
@@ -29,52 +19,36 @@ const playerController = (() => {
     return { player1, player2 }
 })()
 
-const rounds = (() => {
+const roundController = (() => {
     let round = 0;
+    const getRound = () => round
+    const nextRound = () => round++
 
-    const checkRound = () => { 
-        return round 
-    }
-
-    const nextRound = () => {
-        round++
-        console.log(round)
-    }
-
-    return { checkRound, nextRound }
+    return { getRound, nextRound }
 })()
-
-const playTurn = ((index) => {
-    const { checkRound } = roundController()
-    const { player1, player2 } = playerController()
-    const round = checkRound()
-    console.log(round)
-
-    const playerSign = round % 2 === 0 ? player1 : player2
-    if (round > 3) {
-        console.log("check winner")
-        checkWinner(Number(index), playerSign, board)
-    }
-    return playerSign
-})();
 
 function checkInput(userInput) {
     const { player1, player2 } = playerController // otherwise it would ahve been const { player1, player2 } = playerController(). makes the variables accessible? global but private?
-    
-    let board = gameboard.getBoard()
-
-    const playerSign = rounds.checkRound() % 2 === 0 ? player1 : player2
+    let board = gameboardController.getBoard()
+    const playerSign = roundController.getRound() % 2 === 0 ? player1 : player2
 
     if (board[userInput] === '') {
-        gameboard.playerInput(playerSign, userInput)
-        rounds.nextRound()
+        gameboardController.playerInput(playerSign, userInput)
+        roundController.nextRound()
+        console.log("received")
     } else { 
         console.log("space filled")
     }
 
+    if (roundController.getRound() > 8) {
+        console.log("tie")
+    } else if (roundController.getRound() > 4) {
+        checkWinner(Number(userInput), playerSign, board)
+    }
+    
 }
 
-const displayBoard = (() => {
+function displayBoard() {
     const container = document.getElementById('container')
     const playArea = document.createElement('div')
     playArea.classList.add('game')
@@ -88,11 +62,11 @@ const displayBoard = (() => {
     container.appendChild(playArea)
 
     return { displayBoard }
-})();
+};
 
-const checkWinner = ((fieldIndex, playerSign, board) {
-    console.log(fieldIndex, playerSign)
-    console.log("win is checked")
+function checkWinner(fieldIndex, playerSign) { // does not need to be an IIFE as it's just a standard function and has no private vars
+    console.log(gameboardController.getBoard())
+    let board = gameboardController.getBoard()
     const winConditions = [
       [0, 1, 2],
       [3, 4, 5],
@@ -105,17 +79,13 @@ const checkWinner = ((fieldIndex, playerSign, board) {
     ];
     let combinations = winConditions.filter(combination => combination.includes(fieldIndex))
     console.log(combinations[0], combinations.length)
-    console.log(board[0],board[1], board[2])
     let possibleCombinations = combinations.some(possibleCombo => possibleCombo.every(index => board[index] === playerSign))
     console.log(possibleCombinations)
-    // console.log(winConditions.filter((combination) => combination.includes(fieldIndex)).some((possibleCombination) => possibleCombination.every((index) => board[index] === playerSign)));
-    // console.log(winConditions.filter(combination => combination.includes(fieldIndex))).some(possibleCombo => possibleCombo.every(index => board[index] === playerSign))
-    // console.log(winConditions.filter(combination => combination.includes(fieldIndex)).some(possibleCombo => possibleCombo.every(index => board[index] === playerSign)))
-    // return 
-})();
+    return possibleCombinations ? console.log("winner") : console.log("keep playing")
+};
 
+// runs game
 function gameController() {
-    
     displayBoard(checkInput)
 
     return
